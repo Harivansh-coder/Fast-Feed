@@ -1,46 +1,36 @@
-from fastapi import FastAPI, Request, Depends
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from .routers import auth, users
 from pathlib import Path
-
 
 app = FastAPI()
 
-BASE_DIR = Path(__file__).resolve().parent
 
+origins = [
+    "*"
+]
 
-templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# BASE_DIR = Path(__file__).resolve().parent
 
 @app.get("/")
 async def root():
     return {"message": "feed home page"}
 
 
-@app.get("/login", response_class=HTMLResponse)
-def login(request: Request):
-   context = {'request': request, }
-   return templates.TemplateResponse("login.html", context)
+# auth routes
+app.include_router(auth.router)
 
-
-@app.post("/login")
-def login(data: OAuth2PasswordRequestForm = Depends()):
-   return {
-    "username": data.username,
-    "password":data.password,
-   }
+app.include_router(users.router)
 
 @app.post("/posts/create")
 async def create_post():
     return {"message": "feed page"}
 
-@app.post("/users/create")
-async def create_user(request: Request):
-    context = {'request': request, }
-    return templates.TemplateResponse("create.html", context)
-    
-@app.get("/users/create")
-async def create_user(request: Request):
-    context = {'request': request, }
-    return templates.TemplateResponse("create.html", context)
