@@ -1,7 +1,4 @@
 from pydantic import BaseModel, constr
-import uuid
-
-
 
 class User(BaseModel):
     user_name: str

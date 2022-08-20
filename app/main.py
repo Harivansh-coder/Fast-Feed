@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users
-from pathlib import Path
 
 app = FastAPI()
-
 
 origins = [
     "*"
@@ -27,7 +25,7 @@ async def root():
 
 # auth routes
 app.include_router(auth.router)
-
+# user routes
 app.include_router(users.router)
 
 @app.post("/posts/create")
