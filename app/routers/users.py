@@ -22,10 +22,10 @@ async def create_user(user: User):
     return user_dict
 
 
-@router.get("/")
-async def create_user():
-    user_response = my_database.get_all()
-    return user_response
+# @router.get("/")
+# async def create_user():
+#     user_response = my_database.get_all()
+#     return user_response
 
     
 

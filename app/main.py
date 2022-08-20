@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users
 
@@ -19,14 +19,27 @@ app.add_middleware(
 # BASE_DIR = Path(__file__).resolve().parent
 
 @app.get("/")
-async def root():
-    return {"message": "feed home page"}
+async def root(request: Request):
+    cookie_token: str = request.cookies.get("AccessToken")
 
+    if not cookie_token:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not Authenticated"
+        )
+    
+    return {"message" : "you are logged in"}
+    
+
+
+    
+        
 
 # auth routes
 app.include_router(auth.router)
 # user routes
 app.include_router(users.router)
+
+
 
 @app.post("/posts/create")
 async def create_post():
