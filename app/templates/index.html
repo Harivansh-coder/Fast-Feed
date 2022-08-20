@@ -1,0 +1,55 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  
+  <body>
+    
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" placeholder="message"/>
+      <button type="button" onclick="sendPost()">Click me</button>
+    </form>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+
+    <script>
+      var socket = io();
+
+      const current_user = "{{current_user}}";
+
+      socket.on('connect', () => {
+        console.log("connected");
+      })
+
+      socket.on('disconnect', () => {
+        console.log("disconnected");
+      })
+
+      socket.on("post_message", function (msg) {
+        // console.log("me called");
+        var item = document.createElement("li");
+        item.textContent = current_user+ " >>" + msg;
+        messages.appendChild(item);
+        // console.log(item)
+        
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      var messages = document.getElementById("messages");
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+
+      // const current_user = {{ current_user }};
+
+      function sendPost() {
+        // console.log("hello");
+        // socket.emit("sum", {number:[1,2]});
+        if (input.value) {
+          socket.emit("message", input.value);
+          input.value = '';
+        }else{
+          alert("message cannot be empty")
+        }
+      }
+    </script>
+  </body>
+</html>
